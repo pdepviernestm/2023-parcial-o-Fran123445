@@ -12,6 +12,10 @@ class Bot {
 	method anularCargaElectrica() {
 		cargaElectrica = 0
 	}
+	
+	method cambiarAceite() {
+		aceitePuro = not(aceitePuro)
+	}
 }
 
 object sombrero inherits Bot(cargaElectrica = 100, aceitePuro = true) {
@@ -27,7 +31,7 @@ object sombrero inherits Bot(cargaElectrica = 100, aceitePuro = true) {
 		else indiceProximaCasa += 1
 	}
 	
-	
+	override method cambiarAceite() { }
 }
 
 class Estudiante inherits Bot {
