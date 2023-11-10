@@ -1,36 +1,32 @@
 import bots.*
 import casas.*
 
-class Hechizo {
-	method lanzar(bot, objetivo)
-}
-
-class Inmobilus inherits Hechizo {
-	override method lanzar(bot, objetivo) {
+object inmobilus {
+	method lanzar(bot, objetivo) {
 		objetivo.disminuirCargaElectrica(50)
 	}
 }
 
-class sectumSempra inherits Hechizo {
-	override method lanzar(bot, objetivo) {
-		if (bot.experimentado()) {
+object sectumSempra {
+	method lanzar(bot, objetivo) {
+		if (bot.esExperimentado()) {
 			objetivo.aceitePuro(false)
 		}
 	}
 }
 
-class Avadakedabra inherits Hechizo {
-	override method lanzar(bot, objetivo) {
+object avadakedabra {
+	method lanzar(bot, objetivo) {
 		if(not(bot.aceitePuro()) || bot.casa().esPeligrosa()) {
 			objetivo.anularCargaElectrica()
 		}
 	}
 }
 
-class HechizoComun inherits Hechizo {
+class HechizoComun {
 	const cantidadQueDisminuye
 	
-	override method lanzar(bot, objetivo) {
+	method lanzar(bot, objetivo) {
 		if (bot.cargaElectrica() > cantidadQueDisminuye) {
 			objetivo.disminuirCargaElectrica(cantidadQueDisminuye)
 		}

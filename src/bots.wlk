@@ -14,14 +14,33 @@ class Bot {
 	}
 }
 
+object sombrero inherits Bot(cargaElectrica = 100, aceitePuro = true) {
+	const casas = [gryffindor, slytherin, ravenclaw, hufflepuff]
+	var indiceProximaCasa = 0
+	
+	method determinarCasa(estudiante) {
+		var casa = casas.get(indiceProximaCasa)
+		estudiante.casa(casa)
+		casa.integrantes().add(estudiante)
+		
+		if (indiceProximaCasa == 3) indiceProximaCasa = 0
+		else indiceProximaCasa += 1
+	}
+	
+	
+}
+
 class Estudiante inherits Bot {
-	const casa
-	const hechizosAprendidos
+	var property casa
+	const property hechizosAprendidos
 	
 	method estaActivo() = cargaElectrica > 0
 	
 	method lanzar(hechizo, objetivo) {
-		hechizo.lanzar(self, objetivo)
+		if (self.estaActivo() && hechizosAprendidos.contains(hechizo)){
+			hechizo.lanzar(self, objetivo)
+		}
+			
 	}
 	
 	method esExperimentado() = hechizosAprendidos.size() > 3 && cargaElectrica > 50
@@ -30,7 +49,7 @@ class Estudiante inherits Bot {
 class Profesor inherits Estudiante {
 	const materiasDictadas
 	
-	override method esExperimentado() = super() && materiasDictadas.size() >= 2
+	override method esExperimentado() = super() && materiasDictadas >= 2
 	
 	override method disminuirCargaElectrica(cantidad) { }
 	
@@ -39,3 +58,11 @@ class Profesor inherits Estudiante {
 	}
 }
 
+class Materia {
+	const profesor
+	const hechizoQueEnsenia
+	
+	method darClase(estudiantes) {
+		estudiantes.forEach({e => e.hechizosAprendidos().add(hechizoQueEnsenia)})
+	}
+}

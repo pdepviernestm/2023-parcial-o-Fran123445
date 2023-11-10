@@ -1,0 +1,64 @@
+import hechizos.*
+import casas.*
+import bots.*
+
+describe "tests" {
+	
+	const hechizoDeAlbus = new HechizoComun(cantidadQueDisminuye = 60)
+	
+	const albus = new Profesor(aceitePuro = true, cargaElectrica = 100, casa = gryffindor, hechizosAprendidos = [inmobilus, sectumSempra, avadakedabra, hechizoDeAlbus], materiasDictadas = 11)
+	const severus = new Profesor(aceitePuro = true, cargaElectrica = 100, casa = slytherin, hechizosAprendidos = [sectumSempra, inmobilus, avadakedabra, hechizoDeAlbus], materiasDictadas = 10)
+	
+	const draco = new Estudiante(aceitePuro = true, cargaElectrica = 100, casa = null, hechizosAprendidos = [])
+	const harryBotter = new Estudiante(aceitePuro = true, cargaElectrica = 80, casa = null, hechizosAprendidos = [])
+	const malfoy = new Estudiante(aceitePuro = false, cargaElectrica = 60, casa = null, hechizosAprendidos = [])
+	const boty = new Estudiante(aceitePuro = false, cargaElectrica = 10, casa = null, hechizosAprendidos = [])
+	const hermione = new Estudiante(aceitePuro = true, cargaElectrica = 70, casa = null, hechizosAprendidos = [])
+	
+	// Punto 2
+	const defensaHackeosOscuros = new Materia(hechizoQueEnsenia = inmobilus, profesor = severus)
+		
+	
+	test "estudiantes llegan a hogwarts y el sombrero determina sus casas" {
+		// Punto 1
+		var estudiantes = [harryBotter, draco, malfoy, boty, hermione]
+		estudiantes.forEach({e => sombrero.determinarCasa(e)})
+		
+		assert.that(gryffindor.integrantes().contains(harryBotter))
+		assert.that(harryBotter.casa() == gryffindor)
+		
+		assert.that(slytherin.integrantes().contains(draco))
+		assert.that(draco.casa() == slytherin)
+		
+		assert.that(gryffindor.integrantes().contains(hermione))
+		assert.that(hermione.casa() == gryffindor)
+		
+	}
+	
+	test "estudiantes asisten a la clase de defensa contra los hackeos oscuros" {
+		var estudiantes = [harryBotter, draco, malfoy, boty, hermione]
+		defensaHackeosOscuros.darClase(estudiantes)
+		
+		assert.that(estudiantes.all({e => e.hechizosAprendidos().contains(inmobilus)}))
+	}
+	
+	test "albus y severus son experimentados" {
+		assert.that(albus.esExperimentado())
+		assert.that(severus.esExperimentado())
+	}
+	
+	test "albus lanza su ultimo hechizo a draco" {
+		albus.lanzar(albus.hechizosAprendidos().last(), draco)
+		
+		assert.equals(40, draco.cargaElectrica())
+	}
+	
+	test "draco lanza avadakadabra a albus" {
+		draco.casa(slytherin)
+		draco.hechizosAprendidos().add(avadakedabra)
+		draco.lanzar(avadakedabra, albus)
+		
+		assert.equals(50, albus.cargaElectrica())
+	}
+	
+}
