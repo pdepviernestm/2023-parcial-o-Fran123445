@@ -1,0 +1,82 @@
+import hechizos.*
+import casas.*
+import bots.*
+
+describe "tests" {
+	
+	var hechizoDeAlbus = new HechizoComun(cantidadQueDisminuye = 60)
+	
+	var albus = new Profesor(aceitePuro = true, cargaElectrica = 100, casa = gryffindor, hechizosAprendidos = [inmobilus, sectumSempra, avadakedabra, hechizoDeAlbus], materiasDictadas = 11)
+	var severus = new Profesor(aceitePuro = true, cargaElectrica = 100, casa = slytherin, hechizosAprendidos = [sectumSempra, inmobilus, avadakedabra, hechizoDeAlbus], materiasDictadas = 10)
+	
+	var draco = new Estudiante(aceitePuro = true, cargaElectrica = 100, casa = null, hechizosAprendidos = [])
+	var harryBotter = new Estudiante(aceitePuro = true, cargaElectrica = 80, casa = null, hechizosAprendidos = [])
+	var malfoy = new Estudiante(aceitePuro = false, cargaElectrica = 60, casa = null, hechizosAprendidos = [])
+	var boty = new Estudiante(aceitePuro = false, cargaElectrica = 10, casa = null, hechizosAprendidos = [])
+	var hermione = new Estudiante(aceitePuro = true, cargaElectrica = 70, casa = null, hechizosAprendidos = [])
+	
+	var voldebot = new Bot(cargaElectrica = 200, aceitePuro = true)
+	
+	
+	var estudiantes = [harryBotter, draco, malfoy, boty, hermione]
+	
+	// Punto 2
+	var defensaHackeosOscuros = new Materia(hechizoQueEnsenia = inmobilus, profesor = severus)
+	var materiaDeAlbus = new Materia(hechizoQueEnsenia = sectumSempra, profesor = albus)
+		
+	
+	// Punto 1
+	test "estudiantes llegan a hogwarts y el sombrero determina sus casas" {
+		estudiantes.forEach({e => sombrero.determinarCasa(e)})
+		
+		assert.that(gryffindor.integrantes().contains(harryBotter))
+		assert.that(harryBotter.casa() == gryffindor)
+		
+		assert.that(slytherin.integrantes().contains(draco))
+		assert.that(draco.casa() == slytherin)
+		
+		assert.that(gryffindor.integrantes().contains(hermione))
+		assert.that(hermione.casa() == gryffindor)
+		
+	}
+	
+	// Punto 3
+	test "estudiantes asisten a la clase de defensa contra los hackeos oscuros" {
+		defensaHackeosOscuros.darClase(estudiantes)
+		
+		assert.that(estudiantes.all({e => e.hechizosAprendidos().contains(inmobilus)}))
+	}
+	
+	// El punto 4 se puede ver con el ejempl ode Draco, que esta al final
+	
+	// Punto 5
+	test "cada integrante de gryffindor le lanza su ultimo hechizo al innombrable" {
+		estudiantes.forEach({e => sombrero.determinarCasa(e)})
+		
+		materiaDeAlbus.darClase(estudiantes)
+		defensaHackeosOscuros.darClase(estudiantes)
+		gryffindor.integrantes().forEach({i => i.lanzar(i.hechizosAprendidos().last(), voldebot)})
+		
+		assert.equals(100, voldebot.cargaElectrica())
+	}
+	
+	test "albus y severus son experimentados" {
+		assert.that(albus.esExperimentado())
+		assert.that(severus.esExperimentado())
+	}
+	
+	test "albus lanza su ultimo hechizo a draco" {
+		albus.lanzar(albus.hechizosAprendidos().last(), draco)
+		
+		assert.equals(40, draco.cargaElectrica())
+	}
+	
+	test "draco lanza avadakadabra a albus" {
+		draco.casa(slytherin)
+		draco.hechizosAprendidos().add(avadakedabra)
+		draco.lanzar(avadakedabra, albus)
+		
+		assert.equals(50, albus.cargaElectrica())
+	}
+	
+}
